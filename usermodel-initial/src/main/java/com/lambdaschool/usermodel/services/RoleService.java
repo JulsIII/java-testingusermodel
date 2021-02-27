@@ -3,7 +3,6 @@ package com.lambdaschool.usermodel.services;
 import com.lambdaschool.usermodel.models.Role;
 
 import java.util.List;
-
 /**
  * The service that works with the Role Model.
  * <p>
