@@ -12,6 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+
 /**
  * The entry point for clients to access role data
  * <p>
@@ -20,6 +21,7 @@ import java.util.List;
  * working with the "non-owner" object in a many to many relationship is messy
  * we will be fixing that!
  */
+
 @RestController
 @RequestMapping("/roles")
 public class RolesController
