@@ -278,5 +278,5 @@ public class UserServiceImplWithDBTest
                         .get(checking)
                         .getUseremail());
     }
-    
+
 }
