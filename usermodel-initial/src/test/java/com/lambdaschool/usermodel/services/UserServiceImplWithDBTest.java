@@ -2,6 +2,11 @@ package com.lambdaschool.usermodel.services;
 
 import com.lambdaschool.usermodel.UserModelApplicationTesting;
 import com.lambdaschool.usermodel.exceptions.ResourceFoundException;
+import com.lambdaschool.usermodel.exceptions.ResourceNotFoundException;
+import com.lambdaschool.usermodel.models.Role;
+import com.lambdaschool.usermodel.models.User;
+import com.lambdaschool.usermodel.models.UserRoles;
+import com.lambdaschool.usermodel.models.Useremail;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -71,7 +76,7 @@ public class UserServiceImplWithDBTest
                     .size());
     }
 
-    @Test
+    @Test(expected = ResourceNotFoundException.class)
     public void DA_notFoundDelete()
     {
         userService.delete(100);
@@ -81,15 +86,117 @@ public class UserServiceImplWithDBTest
     }
 
     @Test
-    public void findByName() {
+    public void E_findByUsername()
+    {
+        assertEquals("admin",
+                userService.findByName("admin")
+                    .getUsername());
+    }
+
+    @Test(expected = ResourceNotFoundException.class)
+    public void AA_findByUsernameNotFound()
+    {
+        assertEquals("admin",
+                userService.findByName("turtle")
+                        .getUsername());
     }
 
     @Test
-    public void save() {
+    public void AB_findByNameContaining()
+    {
+        assertEquals(4,
+                userService.findByNameContaining("a")
+                    .size());
     }
 
     @Test
-    public void update() {
+    public void F_save()
+    {
+        Role r2 = new Role("user");
+        r2.setRoleid(2);
+
+        User u2 = new User("tiger",
+                "ILuvMath!",
+                "tiger@school.lambda");
+        u2.getRoles()
+                .add(new UserRoles(u2,
+                        r2));
+        u2.getUseremails()
+                .add(new Useremail(u2,
+                        "tiger@tiger.local"));
+
+        User saveU2 = userService.save(u2);
+
+        System.out.println("*** DATA ***");
+        System.out.println(saveU2);
+        System.out.println("*** DATA ***");
+
+        assertEquals("tiger@tiger.local",
+                saveU2.getUseremails()
+                .get(0)
+                .getUseremail());
+    }
+
+    @Test(expected = ResourceNotFoundException.class)
+    public void FA_saveputnotfound()
+    {
+        Role r2 = new Role("user");
+        r2.setRoleid(2);
+
+        User u2 = new User("tiger",
+                "ILuvMath!",
+                "tiger@school.lambda");
+        u2.getRoles()
+                .add(new UserRoles(u2,
+                        r2));
+        u2.getUseremails()
+                .add(new Useremail(u2,
+                        "tiger@tiger.local"));
+        u2.setUserid(999);
+
+        User saveU2 = userService.save(u2);
+
+        System.out.println("*** DATA ***");
+        System.out.println(saveU2);
+        System.out.println("*** DATA ***");
+
+        assertEquals("tiger@tiger.local",
+                saveU2.getUseremails()
+                        .get(0)
+                        .getUseremail());
+    }
+
+    @Test
+    public void FA_saveputfound()
+    {
+        Role r2 = new Role("user");
+        r2.setRoleid(2);
+
+        User u2 = new User("mojo",
+                "ILuvMath!",
+                "mojo@school.lambda");
+        u2.getRoles()
+                .add(new UserRoles(u2,
+                        r2));
+        u2.getUseremails()
+                .add(new Useremail(u2,
+                        "mojo@corgi.local"));
+        u2.setUserid(4);
+
+        User saveU2 = userService.save(u2);
+
+        System.out.println("*** DATA ***");
+        System.out.println(saveU2);
+        System.out.println("*** DATA ***");
+
+        assertEquals("mojo@corgi.local",
+                saveU2.getUseremails()
+                        .get(0)
+                        .getUseremail());
+    }
+
+    @Test
+    public void G_update() {
     }
 
     @Test
