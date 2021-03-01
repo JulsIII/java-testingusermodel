@@ -332,10 +332,96 @@ public class UserServiceImplNoDBTest
     @Test
     public void update()
     {
+        Role r2 = new Role("user");
+        r2.setRoleid(2);
 
+        User u2 = new User("cinnamon",
+                "password",
+                "cinnamon@school.lambda");
+        u2.getRoles()
+                .add(new UserRoles(u2,
+                        r2));
+        u2.getUseremails()
+                .add(new Useremail(u2,
+                        "cinnamon@mymail.thump"));
+        u2.getUseremails()
+                .add(new Useremail(u2,
+                        "hops@mymail.thump"));
+        u2.getUseremails()
+                .add(new Useremail(u2,
+                        "bunny@email.thump"));
+
+        Mockito.when(roleService.findRoleById(2))
+                .thenReturn(r2);
+
+        Mockito.when(userrepos.findById(103l))
+                .thenReturn(Optional.of(userList.get(2)));
+
+        Mockito.when(userrepos.save(any(User.class)))
+                .thenReturn(u2);
+
+        Mockito.when(helperFunctions.isAuthorizedToMakeChange(anyString()))
+                .thenReturn(true);
+
+        assertEquals("bunny@email.thump",
+                userService.update(u2,
+                        103L)
+                .getUseremails()
+                .get(2)
+                .getUseremail());
+    }
+
+    @Test(expected = ResourceNotFoundException.class)
+    public void updateNotFound()
+    {
+        Role r2 = new Role("user");
+        r2.setRoleid(2);
+
+        User u2 = new User("cinnamon",
+                "password",
+                "cinnamon@school.lambda");
+        u2.getRoles()
+                .add(new UserRoles(u2,
+                        r2));
+        u2.getUseremails()
+                .add(new Useremail(u2,
+                        "cinnamon@mymail.thump"));
+        u2.getUseremails()
+                .add(new Useremail(u2,
+                        "hops@mymail.thump"));
+        u2.getUseremails()
+                .add(new Useremail(u2,
+                        "bunny@email.thump"));
+
+        Mockito.when(roleService.findRoleById(2))
+                .thenReturn(r2);
+
+        Mockito.when(userrepos.findById(103l))
+                .thenReturn(Optional.empty());
+
+        Mockito.when(userrepos.save(any(User.class)))
+                .thenReturn(u2);
+
+        Mockito.when(helperFunctions.isAuthorizedToMakeChange(anyString()))
+                .thenReturn(false);
+
+        assertEquals("bunny@email.thump",
+                userService.update(u2,
+                        103L)
+                        .getUseremails()
+                        .get(2)
+                        .getUseremail());
     }
 
     @Test
-    public void deleteAll() {
+    public void deleteAll()
+    {
+        Mockito.doNothing()
+                .when(userrepos)
+                .deleteAll();
+
+        userService.deleteAll();
+        assertEquals(5,
+                userList.size());
     }
 }
