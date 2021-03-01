@@ -119,7 +119,7 @@ public class UserServiceImplWithDBTest
         r2.setRoleid(2);
 
         User u2 = new User("tiger",
-                "ILuvMath!",
+                "ILuvM4th!",
                 "tiger@school.lambda");
         u2.getRoles()
                 .add(new UserRoles(u2,
@@ -147,7 +147,7 @@ public class UserServiceImplWithDBTest
         r2.setRoleid(2);
 
         User u2 = new User("tiger",
-                "ILuvMath!",
+                "ILuvM4th!",
                 "tiger@school.lambda");
         u2.getRoles()
                 .add(new UserRoles(u2,
@@ -176,7 +176,7 @@ public class UserServiceImplWithDBTest
         r2.setRoleid(2);
 
         User u2 = new User("mojo",
-                "ILuvMath!",
+                "ILuvM4th!",
                 "mojo@school.lambda");
         u2.getRoles()
                 .add(new UserRoles(u2,
