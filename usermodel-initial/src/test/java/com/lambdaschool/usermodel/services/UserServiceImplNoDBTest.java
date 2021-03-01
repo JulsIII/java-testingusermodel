@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -122,10 +123,45 @@ public class UserServiceImplNoDBTest
         u2.setUserid(102);
         userList.add(u2);
 
-        
+        //user
+        User u3 = new User("testingbarn",
+                "IluvM4th!",
+                "testingbarn@school.lambda");
+        u3.getRoles()
+                .add(new UserRoles(u3,
+                        r1));
 
+        u3.getUseremails()
+                .add(new Useremail(u3,
+                        "barnbarn@email.test"));
+        u3.getUseremails()
+                .get(0)
+                .setUseremailid(30);
 
+        u3.setUserid(103);
+        userList.add(u3);
 
+        User u4 = new User("testingcat",
+                "password",
+                "testingcat@school.lambda");
+        u4.getRoles()
+                .add(new UserRoles(u4,
+                        r2));
+
+        u4.setUserid(104);
+        userList.add(u4);
+
+        User u5 = new User("testingdog",
+                "password",
+                "testingdog@school.lambda");
+        u4.getRoles()
+                .add(new UserRoles(u5,
+                        r2));
+
+        u5.setUserid(105);
+        userList.add(u5);
+
+        MockitoAnnotations.initMocks(this);
     }
 
     @After
