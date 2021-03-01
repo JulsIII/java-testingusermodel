@@ -13,6 +13,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +21,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.*;
+import static junit.framework.TestCase.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = UserModelApplicationTesting.class)
@@ -196,10 +199,84 @@ public class UserServiceImplWithDBTest
     }
 
     @Test
-    public void G_update() {
+    public void G_update()
+    {
+        Mockito.when(helperFunctions.isAuthorizedToMakeChange(anyString()))
+                .thenReturn(true);
+
+        Role r2 = new Role("user");
+        r2.setRoleid(2);
+
+        User u2 = new User("cinnamon",
+                "password",
+                "cinnamon@school.lambda");
+        u2.getRoles()
+                .add(new UserRoles(u2,
+                        r2));
+        u2.getUseremails()
+                .add(new Useremail(u2,
+                        "cinnamon@mymail.thump"));
+        u2.getUseremails()
+                .add(new Useremail(u2,
+                        "hops@mymail.thump"));
+        u2.getUseremails()
+                .add(new Useremail(u2,
+                        "bunny@email.thump"));
+
+        User updatedu2 = userService.update(u2,
+                7);
+
+        System.out.println("*** DATA ***");
+        System.out.println(updatedu2);
+        System.out.println("*** DATA ***");
+
+        int checking = updatedu2.getUseremails()
+                .size() - 1;
+        assertEquals("bunny@email.thump",
+                updatedu2.getUseremails()
+                        .get(checking)
+                        .getUseremail());
     }
 
-    @Test
-    public void deleteAll() {
+    @Test(expected = ResourceNotFoundException.class)
+    public void GB_updateNotCurrentUserNorAdmin()
+    {
+
+        Role r2 = new Role("user");
+        r2.setRoleid(2);
+
+        User u2 = new User("cinnamon",
+                "password",
+                "cinnamon@school.lambda");
+        u2.getRoles()
+                .add(new UserRoles(u2,
+                        r2));
+        u2.getUseremails()
+                .add(new Useremail(u2,
+                        "cinnamon@mymail.thump"));
+        u2.getUseremails()
+                .add(new Useremail(u2,
+                        "hops@mymail.thump"));
+        u2.getUseremails()
+                .add(new Useremail(u2,
+                        "bunny@email.thump"));
+
+        Mockito.when(helperFunctions.isAuthorizedToMakeChange(anyString()))
+                .thenReturn(false);
+
+        User updatedu2 = userService.update(u2,
+                8);
+
+        System.out.println("*** DATA ***");
+        System.out.println(updatedu2);
+        System.out.println("*** DATA ***");
+
+        int checking = updatedu2.getUseremails()
+                .size() - 1;
+        assertEquals("bunny@email.thump",
+                updatedu2.getUseremails()
+                        .get(checking)
+                        .getUseremail());
     }
+    
 }
