@@ -1,6 +1,7 @@
 package com.lambdaschool.usermodel.services;
 
 import com.lambdaschool.usermodel.UserModelApplicationTesting;
+import com.lambdaschool.usermodel.exceptions.ResourceNotFoundException;
 import com.lambdaschool.usermodel.models.Role;
 import com.lambdaschool.usermodel.models.User;
 import com.lambdaschool.usermodel.models.UserRoles;
@@ -11,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 import static junit.framework.TestCase.assertEquals;
@@ -164,20 +167,40 @@ public class UserServiceImplNoDBTest
         MockitoAnnotations.initMocks(this);
     }
 
-    @After
-    public void tearDown() throws Exception {
-    }
+//    @After
+//    public void tearDown() throws Exception {
+//    }
 
     @Test
-    public void findUserById() {
+    public void findUserById()
+    {
+        Mockito.when(userrepos.findById(101L))
+                .thenReturn(Optional.of(userList.get(0)));
+
+        assertEquals("admin",
+                userService.findUserById(101L)
+                    .getUsername());
     }
 
-    @Test
-    public void findByNameContaining() {
+    @Test(expected = ResourceNotFoundException.class)
+    public void findUserByIdNotFound()
+    {
+        Mockito.when(userrepos.findById(101L))
+                .thenReturn(Optional.empty());
+
+        assertEquals("admin",
+                userService.findUserById(10L)
+                        .getUsername());
     }
 
+//    @Test
+//    public void findByNameContaining() {
+//    }
+
     @Test
-    public void findAll() {
+    public void findAll()
+    {
+        
     }
 
     @Test
