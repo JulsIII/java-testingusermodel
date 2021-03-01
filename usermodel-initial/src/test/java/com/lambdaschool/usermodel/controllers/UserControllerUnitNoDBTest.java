@@ -1,5 +1,6 @@
 package com.lambdaschool.usermodel.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lambdaschool.usermodel.UserModelApplicationTesting;
 import com.lambdaschool.usermodel.models.Role;
 import com.lambdaschool.usermodel.models.User;
@@ -12,15 +13,19 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -177,7 +182,29 @@ public class UserControllerUnitNoDBTest
     }
 
     @Test
-    public void listAllUsers() {
+    public void listAllUsers() throws Exception
+    {
+        String apiUrl = "/users/users";
+
+        Mockito.when(userService.findAll())
+                .thenReturn(userList);
+
+        RequestBuilder rb = MockMvcRequestBuilders.get(apiUrl)
+                .accept(MediaType.APPLICATION_JSON);
+
+        MvcResult r = mockMvc.perform(rb)
+                .andReturn();
+        String tr = r.getResponse()
+                .getContentAsString();
+        ObjectMapper mapper = new ObjectMapper();
+        String er = mapper.writeValueAsString(userList);
+
+        System.out.println("Expect: " + er);
+        System.out.println("Actual: " + tr);
+
+        assertEquals("Rest API Returns List",
+                er,
+                tr);
     }
 
     @Test
